@@ -14,7 +14,7 @@ namespace ConsoleApp
             var body = clinet.GetStringAsync(site);
             Console.WriteLine(body.Result);
             Console.WriteLine();
-            Console.WriteLine("Links");
+            Console.WriteLine("Links ");
             var links = LinkChecker.GetLinks(body.Result);
             links.ToList().ForEach(Console.WriteLine);
             Console.ReadLine();

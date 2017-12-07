@@ -13,7 +13,7 @@ namespace XUnitTest
             var Links = LinkChecker.GetLinks("<a href =\"google.com\"/>");
             Assert.Equal(Links.Count(), 0);
             //Assert.Equal(Links.First(), "google.com");
-           // Assert.True(true);
+           //Assert.True(true);
         }
         [Fact]
         public void WithouthttpAtStartOfLink_LinkParser()
