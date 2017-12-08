@@ -2,9 +2,8 @@
   "Logging": {
     "IncludeScopes": true,
     "LogLevel": {
-      "default": "Information",
-      "ConsoleApp.LinkChecker": "Trace",
-      "ConsoleApp": "Debug"
+      "default": "Information"
+      
     }
   }
 }
