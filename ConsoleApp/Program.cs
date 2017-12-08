@@ -15,23 +15,18 @@ namespace ConsoleApp
             Config conf = new Config(args);
             Logs.Init(conf.configurationRoot);
 
-            GlobalConfiguration.Configuration.UseMemoryStorage();
-            RecurringJob.AddOrUpdate<CheckLinkJob>("Check-Link",J=>J.Execute(conf.site,conf.output), Cron.Minutely);
-            RecurringJob.Trigger("Check-Link");
-
+            //GlobalConfiguration.Configuration.UseMemoryStorage();
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Program>()
+                .UseStartup<Startup>()
                 .Build();
-            using (var server =new BackgroundJobServer())
-            {
-                Console.WriteLine("Hang File server started , please any key to exit");
-                Console.ReadKey();
-                host.Run();
 
-                //host.RunAsService();
-            }
+            //RecurringJob.AddOrUpdate<CheckLinkJob>("Check-Link",J=>J.Execute(conf.site,conf.output), Cron.Minutely);
+            //RecurringJob.Trigger("Check-Link");            
+            RecurringJob.AddOrUpdate(() => Console.WriteLine("simple!"), Cron.Minutely);
+
+            host.Run();
            
         }
     }
