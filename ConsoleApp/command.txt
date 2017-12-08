@@ -7,3 +7,28 @@ To change file type(extension)
 mv .\checksettings.json checksettings.old
 To remove Folder (directory)
 rmdir .\Reports\
+To Copy content and create file 
+cp Logs.cs LinksDb
+To Create a new file 
+New-Item Filenamewithpath
+
+Installed Sql server docker continer Linux
+docker run --name ssql -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -p 1433:1433 -d microsoft/mssql-server-linux
+
+check installtion log 
+docker logs ssql (name/id of container)
+connect to check container runing using sqlcmd 
+docker exec -it <container_id|container_name> /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P <your_password>
+
+follow below links to create db /table and test 
+(https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker)
+
+connect host sql server managment studio with container running sql server 
+get ip of host and append port host port 1433 (-p 1433:1433)
+use sql server instance 
+username =sa 
+password= yourStrong(!)Password  (your password from container).
+
+debug sql server instance 
+for wrong password or log (-v ${pwd}/log:var/opt/mssql/log) map to local current working direcory
+docker run -d --name ssql -v ${pwd}/log:var/opt/mssql/log -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=yourStrong(!)Password' -p 1433:1433 microsoft/mssql-server-linux

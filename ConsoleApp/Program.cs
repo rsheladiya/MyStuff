@@ -51,13 +51,15 @@ namespace ConsoleApp
             //File.WriteAllLines(outputPath, links);
            var checkresult =  LinkChecker.CheckLinks(links);
             using (var file = File.CreateText(conf.output.GetReportFilePath()))
+            using(var linksDb = new LinksDb())
             {
-                foreach (var item in checkresult.OrderBy(i=>i.Exists))
+                foreach (var item in checkresult.OrderBy(i => i.Exists))
                 {
                     var status = item.Ismissing ? "Missing" : "Ok";
                     file.WriteLine($"{status} - {item.Link}");
-
+                    linksDb.Links.Add(item);
                 }
+                linksDb.SaveChanges();
             }
             Console.ReadLine();
 

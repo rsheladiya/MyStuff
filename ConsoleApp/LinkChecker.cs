@@ -62,11 +62,13 @@ namespace ConsoleApp
     }
 
     public class LinkCheckResult
-        {
+    {
+        public int Id { get; set; }
         public bool Exists => String.IsNullOrWhiteSpace(Problem);
         public bool Ismissing => !Exists;
         public string Problem { get; set; }
         public string Link { get; set; }
+        public DateTime CheckedAt { get; set; } = DateTime.UtcNow;
         }
 
 }
