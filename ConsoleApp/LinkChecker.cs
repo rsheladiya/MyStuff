@@ -4,17 +4,28 @@ using System.Text;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
 
 namespace ConsoleApp
 {
     public class LinkChecker
     {
-        public static IEnumerable<string> GetLinks(string page)
+        protected static readonly ILogger<LinkChecker> logger = Logs.Factory.CreateLogger<LinkChecker>();
+        public static IEnumerable<string> GetLinks(string link, string page)
         {
+            
             var htmlDocument = new HtmlAgilityPack.HtmlDocument();
             htmlDocument.LoadHtml(page);
-            var links = htmlDocument.DocumentNode.SelectNodes("//a[@href]")
-                .Select(n => n.GetAttributeValue("href", string.Empty))
+            var originalLinks = htmlDocument.DocumentNode.SelectNodes("//a[@href]")
+                .Select(n => n.GetAttributeValue("href", string.Empty)).ToList();
+            //var logger = Logs.Factory.CreateLogger<LinkChecker>();
+            //logger.LogTrace(string.Join(",", originalLinks));htmlDocument.LoadHtml(page);
+            using (logger.BeginScope($"Getting links from {link}"))
+            {
+                originalLinks.ForEach(i => logger.LogTrace(100,"Origional Link:{link}",i));
+            }
+            var links = originalLinks
                 .Where(l => !String.IsNullOrEmpty(l))
                 .Where(l => l.StartsWith("http"));
             return links;
@@ -40,9 +51,10 @@ namespace ConsoleApp
                     result.Problem = response.IsSuccessStatusCode ? null : response.StatusCode.ToString();
                     return result;
                 }
-                catch (Exception ex)
+                catch (HttpRequestException exception)
                 {
-                    result.Problem = ex.Message;
+                   logger.LogTrace(0, exception, "Failed to retrive {link}", link);
+                    result.Problem = exception.Message;
                     return result;
                 }
             }

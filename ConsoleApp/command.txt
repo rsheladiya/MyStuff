@@ -1,0 +1,9 @@
+To set environment variable 
+$env:Name="value"
+To pass argument with dotnet run 
+dotnet run /name=value
+dotnet run /output:folder=test
+To change file type(extension) 
+mv .\checksettings.json checksettings.old
+To remove Folder (directory)
+rmdir .\Reports\
