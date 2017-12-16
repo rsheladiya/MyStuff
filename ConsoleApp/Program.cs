@@ -5,6 +5,8 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ConsoleApp
 {
@@ -12,20 +14,17 @@ namespace ConsoleApp
     {
       static void Main(string[] args)
         {
-            Config conf = new Config(args);
-            Logs.Init(conf.configurationRoot);
-
             //GlobalConfiguration.Configuration.UseMemoryStorage();
             var host = new WebHostBuilder()
-                .UseKestrel()
+                .UseKestrel()                       
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseStartup<Startup>()
+                .UseStartup<Startup>()                
                 .Build();
 
-            //RecurringJob.AddOrUpdate<CheckLinkJob>("Check-Link",J=>J.Execute(conf.site,conf.output), Cron.Minutely);
-            //RecurringJob.Trigger("Check-Link");            
-            RecurringJob.AddOrUpdate(() => Console.WriteLine("simple!"), Cron.Minutely);
-
+            RecurringJob.AddOrUpdate<CheckLinkJob>("Check-Link",
+               J => J.Execute(), Cron.Minutely);
+            RecurringJob.Trigger("Check-Link");            
+            
             host.Run();
            
         }

@@ -11,8 +11,13 @@ namespace ConsoleApp
 {
     public class LinkChecker
     {
-        protected static readonly ILogger<LinkChecker> logger = Logs.Factory.CreateLogger<LinkChecker>();
-        public static IEnumerable<string> GetLinks(string link, string page)
+        private ILogger _Logger;
+        public LinkChecker(ILogger<LinkChecker> logger)
+        {
+            _Logger = logger;
+        }
+        //protected static readonly ILogger<LinkChecker> logger = Logs.Factory.CreateLogger<LinkChecker>();
+        public IEnumerable<string> GetLinks(string link, string page)
         {
             
             var htmlDocument = new HtmlAgilityPack.HtmlDocument();
@@ -21,9 +26,9 @@ namespace ConsoleApp
                 .Select(n => n.GetAttributeValue("href", string.Empty)).ToList();
             //var logger = Logs.Factory.CreateLogger<LinkChecker>();
             //logger.LogTrace(string.Join(",", originalLinks));htmlDocument.LoadHtml(page);
-            using (logger.BeginScope($"Getting links from {link}"))
+            using (_Logger.BeginScope($"Getting links from {link}"))
             {
-                originalLinks.ForEach(i => logger.LogTrace(100,"Origional Link:{link}",i));
+                originalLinks.ForEach(i => _Logger.LogTrace(100,"Origional Link:{link}",i));
             }
             var links = originalLinks
                 .Where(l => !String.IsNullOrEmpty(l))
@@ -31,14 +36,14 @@ namespace ConsoleApp
             return links;
         }
 
-        public static IEnumerable<LinkCheckResult> CheckLinks(IEnumerable<string> links)
+        public IEnumerable<LinkCheckResult> CheckLinks(IEnumerable<string> links)
         {
             var all = Task.WhenAll(links.Select(CheckLink));
             return all.Result;
 
         }
 
-        private static async Task<LinkCheckResult> CheckLink(string link)
+        private async Task<LinkCheckResult> CheckLink(string link)
         {
             var result = new LinkCheckResult();
             result.Link = link;
@@ -53,7 +58,7 @@ namespace ConsoleApp
                 }
                 catch (HttpRequestException exception)
                 {
-                   logger.LogTrace(0, exception, "Failed to retrive {link}", link);
+                   _Logger.LogTrace(0, exception, "Failed to retrive {link}", link);
                     result.Problem = exception.Message;
                     return result;
                 }

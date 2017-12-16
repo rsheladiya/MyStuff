@@ -2,16 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleApp
 {
  public class Config
     {
-        public string site{ get; set; }
-        public OutputSettings output{ get; set; }
-        public IConfigurationRoot configurationRoot { get; set; }
-        public Config(string[] args)
+        //public string site{ get; set; }
+        //public OutputSettings output{ get; set; }
+        //public IConfigurationRoot configurationRoot { get; set; }
+        
+        public static IConfigurationRoot Build()
         {
             var inMemory = new Dictionary<string, string>
             {
@@ -24,13 +26,12 @@ namespace ConsoleApp
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("checksettings.json", true)
                 .AddJsonFile("Config.json", true)
-                .AddCommandLine(args)
+                .AddCommandLine(Environment.GetCommandLineArgs().Skip(1).ToArray())
                 .AddEnvironmentVariables();
-
-            var configuration = configBuilder.Build();
-            configurationRoot = configuration;
-            site = configuration["site"];
-            output = configuration.GetSection("output").Get<OutputSettings>();
+            return configBuilder.Build();
+            //var configuration = configBuilder.Build();
+            //configurationRoot = configuration;          
+            //output = configuration.GetSection("output").Get<OutputSettings>();
         }
     }
 }

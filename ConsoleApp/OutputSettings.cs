@@ -24,4 +24,8 @@ namespace ConsoleApp
             return Path.GetDirectoryName(GetReportFilePath());
         }
     }
+    public class SiteSettings
+    {
+        public string Site { get; set; }
+    }
 }
